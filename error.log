@@ -1,0 +1,13 @@
+[36minfo[39m: [36mListening to port: 8080 on envirnment: production[39m
+[36minfo[39m: [36mListening to port: 8080 on envirnment: production[39m
+[36minfo[39m: [36mListening to port: 8080 on envirnment: production[39m
+[36minfo[39m: [36mListening to port: 8080 on environment: production[39m
+[32mhttp[39m: [32mGET en /api/products - 23/9/2023 en ambiente production[39m
+[36minfo[39m: [36mListening to port: 8080 on environment: production[39m
+[32mhttp[39m: [32mGET en /api/products - 23/9/2023 en ambiente production[39m
+[32mhttp[39m: [32mGET en /js/prods.js - 23/9/2023 en ambiente production[39m
+[31merror[39m: [31mErrorcito[39m
+[31merror[39m: [31mUn error[39m
+[35mfatal[39m: [35mUn error fatal[39m
+[31merror[39m: [31mError.[39m
+[35mfatal[39m: [35mFatal error.[39m

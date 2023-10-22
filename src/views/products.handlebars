@@ -1,0 +1,31 @@
+<div>
+    <div style="display: flex; justify-content: space-around;">
+    <h2>Bienvenido/a {{user.name}}</h2>
+    <h1>List of Products</h1>
+    <button class="logout">Logout</button>
+    <ul class="ul">
+    </div>
+        {{#each products.docs}}
+            <li>Title: {{this.title}}</li>
+            <li>Description: {{this.description}}</li>
+            <li>Category: {{this.category}}</li>
+            <li>Price: ${{this.price}}</li>
+            <li class="idValue">Id: ${{this._id}}</li>
+            <button class="addToCart" data-id={{this._id}}>Agregar al carrito</button>
+        {{/each}}
+    </ul>
+    <div>
+        {{#if products.hasPrevPage}}
+            <a
+                href="/api/products?page={{products.prevPage}}&query={{query}}&limit={{products.limit}}&order={{order}}"
+            >Anterior</a>
+        {{/if}}
+        <span>Pagina {{products.page}} de {{products.totalPages}}</span>
+        {{#if products.hasNextPage}}
+            <a
+                href="/api/products?page={{products.nextPage}}&query={{query}}&limit={{products.limit}}&order={{order}}"
+            >Siguiente</a>
+        {{/if}}
+    </div>
+</div>
+<script src="/js/prods.js"></script>

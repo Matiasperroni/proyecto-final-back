@@ -1,0 +1,14 @@
+<div style="display: flex; flex-direction: column; align-items: center;">
+    <h1>Productos traidos de MongoDB</h1>
+    {{#each products}}
+    <li>
+        <ul>title: {{this.title}}</ul>
+        <ul>description: {{this.description}}</ul>
+        <ul>id: {{this._id}}</ul>
+        <ul>category: {{this.category}}</ul>
+        <ul>stock: {{this.stock}}</ul>
+    </li>
+    {{/each}}
+</div>
+<script src="/socket.io/socket.io.js"></script>;
+<script src="/js/home.js"></script>

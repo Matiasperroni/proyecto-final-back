@@ -1,0 +1,241 @@
+paths:
+  /api/carts/:
+    get:
+      summary: Gets all carts available.
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Carts were obtained from database.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/Cart"
+        "404":
+          description: No carts were found in the database.
+        "500":
+          description: Server error.
+
+    post:
+      summary: Create cart in database.
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Cart was created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "500":
+          description: Internal Server Error
+
+  /api/carts/{cid}:
+    get:
+      summary: Get cart by ID.
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: ID of the cart you want to get.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The cart was obtained successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "404":
+          description: Cart not found
+        "500":
+          description: Internal Server Error
+
+    put:
+      summary: Update cart by ID.
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: ID of cart to update.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "404":
+          description: Cart not found.
+        "500":
+          description: Server error.
+
+    delete:
+      summary: Empty cart by ID.
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Cart ID to empty.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart emptied successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "404":
+          description: Cart not found.
+        "500":
+          description: Server Error
+
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Add product to cart.
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Cart ID in wich the product will be added.
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: Product ID to be added.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product added succesfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "404":
+          description: Cart or product not found.
+        "500":
+          description: Server Error.
+
+    put:
+      summary: Update product in cart.
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Cart ID containing the product to update.
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: Product ID to update in cart.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product incart was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "404":
+          description: Cart or product not found.
+        "500":
+          description: Internal Server Error.
+
+    delete:
+      summary: Remove product from cart
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Cart ID containing the product to remove
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: Product ID to remove from the cart
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The product was removed from the cart successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "500":
+          description: Internal Server Error
+
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Finalize purchase.
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: Cart ID to be purchased.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Purchase was completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "404":
+          description: Cart not found or purchase could not be completed.
+        "500":
+          description: Server error.
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: A Mongo ID.
+        products:
+          type: array
+          description: List of products in the cart
+          items:
+            type: object
+            properties:
+              product:
+                type: ObjectId
+                description: Product ID
+                required: true
+              quantity:
+                type: Number
+                description: Quantity of the product in the cart
+                required: true
+                default: 1
+      example:
+        _id: ObjectId("64a71a44e6ca8dc86044cd2f")
+        products: []
+        owner: "Pepe"
