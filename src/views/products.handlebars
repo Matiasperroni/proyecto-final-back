@@ -1,7 +1,8 @@
 <div>
     <div style="display: flex; justify-content: space-around;">
-    <h2>Bienvenido/a {{user.name}}</h2>
+    <h2>Welcome to Ecommerce {{user.name}}</h2>
     <h1>List of Products</h1>
+    <button class="cartBtn">Go to my Cart</button>
     <button class="logout">Logout</button>
     <ul class="ul">
     </div>
@@ -9,22 +10,23 @@
             <li>Title: {{this.title}}</li>
             <li>Description: {{this.description}}</li>
             <li>Category: {{this.category}}</li>
+            <li>Stock: {{this.stock}}</li>
             <li>Price: ${{this.price}}</li>
             <li class="idValue">Id: ${{this._id}}</li>
-            <button class="addToCart" data-id={{this._id}}>Agregar al carrito</button>
+            <button class="addToCart" data-id={{this._id}}>Add Product to Cart</button>
         {{/each}}
     </ul>
     <div>
         {{#if products.hasPrevPage}}
             <a
                 href="/api/products?page={{products.prevPage}}&query={{query}}&limit={{products.limit}}&order={{order}}"
-            >Anterior</a>
+            >Previous</a>
         {{/if}}
-        <span>Pagina {{products.page}} de {{products.totalPages}}</span>
+        <span>Page {{products.page}} of {{products.totalPages}}</span>
         {{#if products.hasNextPage}}
             <a
                 href="/api/products?page={{products.nextPage}}&query={{query}}&limit={{products.limit}}&order={{order}}"
-            >Siguiente</a>
+            >Next</a>
         {{/if}}
     </div>
 </div>

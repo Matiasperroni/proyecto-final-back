@@ -1,8 +1,13 @@
 <div>
-    Aca va a ir el carrito
+    <h1>Your Cart:</h1>
     {{#each products}}
-        <p>Producto: {{this.product.title}}</p>
-        <p>Precio: ${{this.product.price}}</p>
-        <p>Cantidad: {{this.quantity}}</p>
+        <p>Product: {{this.product.title}}</p>
+        <p>Price: ${{this.product.price}}</p>
+        <p>Quantity: {{this.quantity}}</p>
+        <button class="deleteFromCart" data-id={{this._id}}>Delete Product from Cart</button>
     {{/each}}
+    <br/>
+    <button class="goBack">Keep buying</button>
+    <button class="purchase">Purchase</button>
 </div>
+<script src="/js/carts.js"></script>

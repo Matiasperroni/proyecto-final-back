@@ -63,7 +63,7 @@ export const addProductToCart = async (req, res) => {
         const cartID = req.params.cid;
         const prodID = req.params.pid;
         const user = req.session.user;
-        
+
         const cart = await cartRepository.getById(cartID);
         console.log(cart);
         if (cart) {
@@ -98,9 +98,7 @@ export const addProductToCart = async (req, res) => {
         );
         res.status(200).send(productAddedToCart);
     } catch (error) {
-        req.logger.error(
-            `Server error adding product to cart${error}`
-        );
+        req.logger.error(`Server error adding product to cart${error}`);
         res.status(500).send("Error, unable to obtain data");
     }
 };
@@ -115,16 +113,13 @@ export const deleteProdFromCart = async (req, res) => {
 export const updateWholeCart = async (req, res) => {
     try {
         const cartID = req.params.cid;
-    const prod = req.body;
-    const updatedCart = await cartRepository.updateWholeCart(cartID, prod);
-    res.status(200).send(updatedCart);
-    } catch(error) {
-        req.logger.error(
-            `Server error updating cart ${error}`
-        );
+        const prod = req.body;
+        const updatedCart = await cartRepository.updateWholeCart(cartID, prod);
+        res.status(200).send(updatedCart);
+    } catch (error) {
+        req.logger.error(`Server error updating cart ${error}`);
         res.status(500).send("Server error updating cart.");
     }
-    
 };
 
 export const updateQuantity = async (req, res) => {
@@ -158,13 +153,20 @@ export const finishPurchase = async (req, res) => {
         const user = req?.session?.user;
         const cartID = req.params.cid;
         const cart = await cartRepository.purchase(cartID, user.email);
-        cart.ticket.purchaser = `Name: ${user.first_name} Last Name: ${user.last_name}. Email: ${user.email}`;
-        if (cart) {
-            const newTicket = { newTicket: cart.ticket };
-            console.log(newTicket);
-            res.render("purchase", { newTicket: newTicket });
+        console.log("soy cart de finish purchase", cart);
+        if (!cart.ticket) {
+            res.status(500).send(
+                "Error trying to purchase: we don´t have that much products in stock."
+            );
         } else {
-            res.status(500).send("error: error trying to purchase.");
+            cart.ticket.purchaser = `Name: ${user.first_name} Last Name: ${user.last_name}. Email: ${user.email}`;
+            if (cart) {
+                const newTicket = { newTicket: cart.ticket };
+                console.log(newTicket);
+                res.render("purchase", { newTicket: newTicket });
+            } else {
+                res.status(500).send("error: error trying to purchase.");
+            }
         }
     } catch (error) {
         req.logger.error(`Server error finishing purchase ${error}`);

@@ -5,6 +5,8 @@ const addEvents = () => {
     });
     const logoutButton = document.querySelector(".logout")
     logoutButton.addEventListener("click", logout)
+    const cartBtn = document.querySelector(".cartBtn")
+    cartBtn.addEventListener("click", goToCart)
 };
 let cartID = "";
 const giveCart = async () => {
@@ -29,7 +31,6 @@ const addToCart = async (e) => {
         headers: {
             "Content-Type": "application/json",
         },
-        // body: "quantity: quantity" ,
     });
     const result = await response.json();
 };
@@ -37,6 +38,10 @@ const addToCart = async (e) => {
 const logout = async() => {
     localStorage.clear()
     window.location.replace("/sessions/logout")
+}
+const goToCart = () => {
+    console.log("going to cart", cartID);
+    window.location.replace(`/api/carts/${cartID}`)
 }
 
 window.addEventListener("load", () => {

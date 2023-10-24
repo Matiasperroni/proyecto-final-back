@@ -33,7 +33,6 @@ export const isUserPremiumOrAdmin = (req, res, next) => {
 };
 
 export const isUserAvailableToAddToCart = (req, res, next) => {
-    console.log(req, "middleware");
     if (
         req?.session.user?.role === "User" ||
         req?.session.user?.role === "Premium"
@@ -53,8 +52,9 @@ export const setLastConnectionMiddleware = async (req, res, next) => {
 };
 
 export const isAdmin = (req, res, next) => {
-    if(req.session.user === "Admin") {
+    if(req.session.user.role === "Admin") {
         next()
+    } else {
+        res.status(403).send("You must be Admin.")
     }
-    res.status(403).send("You must be Admin.")
 }

@@ -1,6 +1,6 @@
 import cartModel from "../models/carts.schema.js";
-import productsModel from '../models/products.schema.js';
-import ticketModel from '../models/tickets.schema.js'
+import productsModel from "../models/products.schema.js";
+import ticketModel from "../models/tickets.schema.js";
 
 class CartManagerDB {
     constructor() {
@@ -50,7 +50,7 @@ class CartManagerDB {
             }
 
             const prodIndex = cart.products.findIndex(
-                (prod) => prod.product === prodID
+                (prod) => prod.product.toString() === prodID
             );
             if (prodIndex !== -1) {
                 cart.products[prodIndex].quantity++;
@@ -65,17 +65,41 @@ class CartManagerDB {
             throw new Error("Could not add products to cart: " + error);
         }
     }
+    // async deleteProdFromCart(cartID, prodID) {
+    //     try {
+    //         const cart = await this.cartsModel.findById(cartID);
+    //         // console.log(cart.products.product, "from delete");
+    //         const filtered = cart.products.filter((prod) => {prod.id === prodID})
+    //         console.log(filtered);
+
+    //         // const prodIndex = cart.products.findIndex(
+    //         //     (prod) => prod.product === prodID
+    //         // );
+    //         // if (prodIndex !== -1) {
+    //         //     cart.products[prodIndex].quantity++;
+    //         // } else {
+    //         //     const prodToDelete = { product: prodID };
+    //         //     cart.products.splice(prodToDelete, 1);
+    //         // }
+    //         // await cart.save();
+    //         return cart;
+    //     } catch (error) {
+    //         throw new Error(
+    //             error.message
+    //         );
+    //     }
+    // }
+
     async deleteProdFromCart(cartID, prodID) {
         try {
             const cart = await this.cartsModel.findById(cartID);
             const prodIndex = cart.products.findIndex(
-                (prod) => prod.product === prodID
+                (prod) => prod._id.toString() === prodID
             );
             if (prodIndex !== -1) {
-                cart.products[prodIndex].quantity++;
+                cart.products.splice(prodIndex, 1);
             } else {
-                const prodToDelete = { product: prodID };
-                cart.products.splice(prodToDelete, 1);
+                throw new Error("Error deleting product");
             }
             await cart.save();
             return cart;
@@ -85,13 +109,14 @@ class CartManagerDB {
             );
         }
     }
+
     async updateWholeCart(cartID, prods) {
         try {
             // const cartToUpdate = await this.cartsModel.findById(cartID);
             console.log(cartID, prods, "a ver si llega aca");
             const updatedCart = await this.cartsModel.findOneAndUpdate(
                 { _id: cartID },
-                { product: prods },
+                { product: prods }
             );
             console.log("updated cart", updatedCart);
             return updatedCart;
@@ -136,21 +161,21 @@ class CartManagerDB {
             let totalPrice = 0;
             let unavailableProducts = [];
             const randomCode = Math.floor(Math.random() * 1000) + 1;
-
             for (const cartProduct of cart.products) {
                 const product = await productsModel.findById(
                     cartProduct.product
                 );
-
                 if (!product) {
                     throw new Error("Product not found");
                 }
 
                 if (product.stock < cartProduct.quantity) {
+                    console.log("aca");
                     unavailableProducts.push(cartProduct.product);
                 } else {
                     product.stock -= cartProduct.quantity;
-                    await this.deleteProdFromCart(cartID, cartProduct.product._id);
+                    console.log(cartID);
+                    await this.deleteProdFromCart(cartID, cartProduct._id.toString());
                     totalPrice =
                         product.price * cartProduct.quantity + totalPrice;
                     await product.save();
@@ -158,15 +183,17 @@ class CartManagerDB {
             }
 
             if (unavailableProducts.length > 0) {
+                console.log(unavailableProducts);
+                console.log(email, totalPrice);
                 return unavailableProducts;
             }
-
             const newTicket = await ticketModel.create({
                 code: randomCode,
                 purchase_datetime: Date.now(),
                 amount: totalPrice,
                 purchaser: email,
             });
+            console.log(newTicket, "new ticket");
             const ticket = await ticketModel.findOne({code: newTicket.code}).lean()
             console.log("soy el ticket", ticket);
 

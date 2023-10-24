@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {isConnected, isUserPremiumOrAdmin} from "../middlewares/middlewares.js";
+import {isConnected} from "../middlewares/middlewares.js";
 import { validateToken } from '../utils.js';
 import { register, login, profile, landing} from "../controllers/views.controller.js"
 

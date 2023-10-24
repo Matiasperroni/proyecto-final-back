@@ -122,3 +122,7 @@ export const deleteInactiveUsers = async (req, res) => {
         res.status(500).send({ error: e.message });
     }
 };
+
+export const admin = (req, res) => {
+    res.render("admin")
+}
