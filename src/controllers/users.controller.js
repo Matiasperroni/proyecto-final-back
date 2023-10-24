@@ -1,7 +1,7 @@
 import userModel from "../dao/models/users.schema.js";
 import UserDTO from "../dto/user.dto.js";
-import nodemailer from "nodemailer"
-import { mailingConfig } from '../utils.js';
+import nodemailer from "nodemailer";
+import { mailingConfig } from "../utils.js";
 const transport = nodemailer.createTransport(mailingConfig);
 
 export const changeRole = async (req, res) => {
@@ -59,7 +59,6 @@ export const addDocuments = async (req, res) => {
         // const user = await userModel.findOne({ email: "INSERTAR EMAIL PARA TESTEAR O SETEAR COOKIE EN POSTMAN" });
 
         const user = await userModel.findOne({ email: req.session.user.email });
-        console.log(user, "de add docs");
         const documents = user.documents || [];
         let userUpdated;
         if (req.files) {
@@ -70,7 +69,6 @@ export const addDocuments = async (req, res) => {
                     reference: file.path,
                 })),
             ];
-            console.log(newDocuments, "soy los archivos");
             userUpdated = await user.updateOne({ documents: newDocuments });
         }
 
@@ -83,7 +81,7 @@ export const addDocuments = async (req, res) => {
 export const getAllUsers = async (req, res) => {
     try {
         //aca filto los que no esten inactivos.
-        const users = await userModel.find({inactive: false});
+        const users = await userModel.find({ inactive: false });
         const usersDTO = [];
         Object.entries(users).forEach((user) => {
             let userNew = new UserDTO(user[1]);
@@ -103,9 +101,9 @@ export const sendEmail = (usersArray) => {
             subject: "Your account has been deleted for inactivity.",
             html: `<h1>You have not logged in more than two weeks, your account has been deleted.</h1>
         `,
-        })
-    })
-}
+        });
+    });
+};
 
 // en lugar de eliminar los usuarios de la bd los marco con un campo "inactive"
 export const deleteInactiveUsers = async (req, res) => {
@@ -113,10 +111,13 @@ export const deleteInactiveUsers = async (req, res) => {
         const currentDate = new Date();
         const twoDaysInMilliseconds = 2 * 24 * 60 * 60 * 1000;
         // const checkUsers = await userModel.find({last_connection: {$lt: currentDate - 30}})
-        const updateUsers = await userModel.updateMany({last_connection: {$lt: currentDate - twoDaysInMilliseconds}}, {$set: {inactive: true}})
+        const updateUsers = await userModel.updateMany(
+            { last_connection: { $lt: currentDate - twoDaysInMilliseconds } },
+            { $set: { inactive: true } }
+        );
         const inactiveUsers = await userModel.find({ inactive: true });
         // console.log("users que deberian ser de 2 semanas o mas", inactiveUsers);
-        sendEmail(inactiveUsers)
+        sendEmail(inactiveUsers);
         res.status(200).send(inactiveUsers);
     } catch (e) {
         res.status(500).send({ error: e.message });
@@ -124,5 +125,50 @@ export const deleteInactiveUsers = async (req, res) => {
 };
 
 export const admin = (req, res) => {
-    res.render("admin")
-}
+    res.render("admin");
+};
+
+export const getUserByEmail = async (req, res) => {
+    try {
+        const userEmail = req.params.email;
+        const user = await userModel.find({ email: userEmail });
+        console.log(user);
+        res.status(200).send(user);
+    } catch (e) {
+        res.status(500).send({ error: e.message });
+    }
+};
+
+export const deleteUserByEmail = async (req, res) => {
+    try {
+        const userEmail = req.params.email;
+        const deleted = await userModel.findOneAndDelete({ email: userEmail });
+        if (!deleted) {
+            res.status(404).send("Cannot find user.");
+        } else {
+            res.status(200).send(deleted);
+        }
+    } catch (e) {
+        res.status(500).send({ error: e.message });
+    }
+};
+
+export const changeRoleByEmail = async (req, res) => {
+    try {
+        const userEmail = req.params.email;
+        const user = await userModel.findOne({ email: userEmail });
+        if (user.role === "Premium") {
+            user.role = "User";
+            user.save();
+            res.status(200).send("role changed to User!");
+        } else if (user.role === "User") {
+            user.role = "Premium";
+            user.save();
+            res.status(200).send("role changed to Premium!");
+        } else {
+            res.send("Cannot change Admin role.");
+        }
+    } catch (e) {
+        res.status(500).send({ error: e.message });
+    }
+};
