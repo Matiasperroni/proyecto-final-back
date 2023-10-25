@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {isConnected} from "../middlewares/middlewares.js";
-import { validateToken } from '../utils.js';
+import { validateTokenRecEmail } from '../utils.js';
 import { register, login, profile, landing} from "../controllers/views.controller.js"
 
 
@@ -15,7 +15,7 @@ router.get('/current', profile)
 
 router.get("/", landing)
 
-router.get("/restorepass/:token", validateToken, (req, res) => {
+router.get("/restorepass/:token", validateTokenRecEmail, (req, res) => {
     res.render('restorePass', { token: req.params.token });
   })
 

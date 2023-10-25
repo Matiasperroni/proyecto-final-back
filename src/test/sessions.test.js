@@ -27,12 +27,10 @@ describe.only("Testing sessions.",() => {
         expect(userLogged.body.payload.first_name).to.equal(user.first_name)
         expect(userLogged.body.payload.email).to.equal(user.email)
         expect(userLogged.body.payload.role).to.equal("Premium")
-        console.log("log",userLogged.body.payload);
     })
 
     it("GET request to /current should render user info.", async () => {
         const userCurrent = await requester.get("/current")
-        console.log("current", userCurrent.header);
         expect(userCurrent.text).to.not.be.empty
         expect(userCurrent.status).to.equal(200)
         expect(userCurrent.header).to.deep.include({'content-type': 'text/html; charset=utf-8'})

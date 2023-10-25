@@ -11,7 +11,6 @@ const addEvents = () => {
 let cartID = "";
 const giveCart = async () => {
     cartID = localStorage.getItem("cartId");
-    console.log("soy el guardado del ls", cartID);
     if (!cartID) {
         const response = await fetch("/sessions/getusercart", {
             method: "GET",
@@ -21,11 +20,10 @@ const giveCart = async () => {
         localStorage.setItem("cartId", cartID);
     }
 };
-// window.addEventListener("load", giveCart)
+
 
 const addToCart = async (e) => {
     const productID = e.target.dataset.id;
-    console.log("soy cartid", cartID, "y el prod es: ", productID);
     const response = await fetch(`/api/carts/${cartID}/product/${productID}`, {
         method: "POST",
         headers: {
@@ -40,7 +38,6 @@ const logout = async() => {
     window.location.replace("/sessions/logout")
 }
 const goToCart = () => {
-    console.log("going to cart", cartID);
     window.location.replace(`/api/carts/${cartID}`)
 }
 

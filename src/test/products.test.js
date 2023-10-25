@@ -1,7 +1,6 @@
 import chai from "chai";
 import supertest from "supertest";
 import mongoose from "mongoose";
-// import { validatePassword } from '../utils.js';
 
 const expect = chai.expect;
 const requester = supertest("http://localhost:8080");
@@ -22,7 +21,6 @@ describe("Testing PRODUCTS routes.", () => {
             password: "asd123",
         };
         const login = await requester.post("/sessions/login").send(credentials);
-        // console.log("login", login.header);
         expect(login.status).to.equal(200);
         expect(login.ok).to.equal(true);
         expect(login.body).to.include({ status: "success" });
@@ -53,7 +51,6 @@ describe("Testing PRODUCTS routes.", () => {
             "Cookie",
             "connect.sid=s%3AEVqqR5CQaS8M9o9VTRZK2qnS4Tt_C5dz.O0nfrFu9WQfiOO%2Fa8GZMO4zUUytSrGOGrhQIk0W1f2M; Path=/; HttpOnly"
         );
-        // console.log(postedProduct);
         expect(postedProduct.status).to.equal(200);
         expect(postedProduct.body?.addedProduct).to.be.an("object")
         const secondProduct = await requester.post('/api/products').send(product)

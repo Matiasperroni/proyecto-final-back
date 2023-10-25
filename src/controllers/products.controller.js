@@ -98,7 +98,6 @@ export const mockingProducts = async (req, res) => {
 export const addProduct = async (req, res) => {
     //todo agregar una vista que permita agregar productos a un admin o premium y asi se agregue su email como owner directamente
     const product = req.body;
-    console.log(product);
     const addedProduct = await productRepository.addProduct(product);
     if (!addedProduct) {
         CustomError.createError({
@@ -118,13 +117,12 @@ export const updateProduct = async (req, res) => {
     let prodToUpdate;
     if (user.role === "Admin" || user.email === prodToAdd.owner) {
         prodToUpdate = await productRepository.updateProduct(prodID, prodToAdd);
-        console.log(prodToUpdate, "prodtoupdate");
     } else {
         CustomError.createError({
             name: "Request error",
             cause: addProductError(),
             code: EErrors.ROUTING_ERROR,
-            message: "Could not update product",
+            message: "Could not update product, you must be Admin or it has to be your product to update.",
         });
     }
     res.send(prodToUpdate);

@@ -85,19 +85,16 @@ const initializePassport = () => {
                 try {
                     const user = await userModel.findOne({ email: username });
                     if (!user) {
-                        console.log("no paso", user);
                         return done(null, false, { message: "User not found" });
                     } else if(user.inactive === true) {
                         return done(null, false, {message: "User deleted because of inactivity"})
                     }
                     if (!validatePassword(user, password)) {
                         {
-                            //console.log("no pw", user);
                             return done(null, false);
                         }
                     }
                     const jwt = generateToken(user);
-                    // console.log(jwt, "veremos");
                     return done(null, jwt);
                 } catch (error) {
                     return done({ message: "Error logging in" });
@@ -138,7 +135,6 @@ const initializePassport = () => {
     );
 
     passport.serializeUser((user, done) => {
-        // console.log("antes de serialize", user);
         done(null, user._id);
     });
 

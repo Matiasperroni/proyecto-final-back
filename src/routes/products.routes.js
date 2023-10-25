@@ -11,7 +11,7 @@ router.get("/", isUserPremiumOrAdmin, getProducts);
 
 router.get("/:pid", isUserPremiumOrAdmin, getProductById);
 
-router.post("/", isAdminOrPremium,  addProduct);
+router.post("/", isAdminOrPremium, addProduct);
 
 router.put("/:pid", isAdminOrPremium, updateProduct);
 

@@ -11,7 +11,6 @@ dotenv.config()
 const MONGO_URL = process.env.MONGO_URL;
 const connection = mongoose.connect(MONGO_URL)
 
-// const cartRepository = new CartRepository();
 const expect = chai.expect;
 const requester = supertest("http://localhost:8080");
 

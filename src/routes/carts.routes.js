@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {getCarts, createNewCart, getCartByID, addProductToCart, deleteProdFromCart, updateWholeCart, updateQuantity, deleteCart, finishPurchase} from "../controllers/carts.controller.js"
+import {getCarts, createNewCart, getCartByID, addProductToCart, deleteProdFromCart, updateWholeCart, updateQuantity, emptyCart, finishPurchase} from "../controllers/carts.controller.js"
 import { isUserAvailableToAddToCart } from '../middlewares/middlewares.js';
 const router = Router();
 
@@ -16,11 +16,11 @@ router.post("/:cid/product/:pid", isUserAvailableToAddToCart, addProductToCart);
 
 router.delete("/:cid/products/:pid", deleteProdFromCart);
 
-router.put("/:cid", updateWholeCart);
+router.put("/:cid", updateWholeCart);  //x
 
 router.put("/:cid/products/:pid", updateQuantity);
 
-router.delete("/:cid", deleteCart);
+router.delete("/:cid", emptyCart);
 
 router.get("/:cid/purchase", isUserAvailableToAddToCart, finishPurchase)
 

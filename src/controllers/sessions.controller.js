@@ -1,4 +1,3 @@
-// import passport from "passport";
 import UserDTO from "../dto/user.dto.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
@@ -58,8 +57,6 @@ export const sendEmail = (req, res) => {
     try {
         const email = req.params.email;
         const jwt = generateToken(email);
-        console.log(jwt);
-        console.log(mailingConfig.auth.user);
         transport.sendMail({
             from: `Coder <${mailingConfig.auth.user}>`,
             to: email,
@@ -102,7 +99,6 @@ export const changePassword = async (req, res) => {
         }
 
         const hashedNewPassword = createHash(newPassword);
-        // console.log("soy el hashedpw", hashedNewPassword);
         user.password = hashedNewPassword;
         await user.save();
 
@@ -122,10 +118,8 @@ export const getCartFromUser = async (req, res) => {
 export const setLastConnection = async (email) =>{
     try {
         const user = await userModel.findOne({ email });
-        console.log(user);
         if( !user ) throw new Error('Server error logging in');
         const updated = await user.updateOne({ last_connection: new Date() })
-          console.log(updated);
     } catch (e) {
         throw new Error(e);
     }

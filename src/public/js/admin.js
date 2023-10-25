@@ -9,7 +9,6 @@ const emailDelete = document.querySelector(".emailDelete")
 const deleteUser = document.querySelector(".deleteUser")
 
 deleteUser.addEventListener("click", async ()=>{
-    console.log(emailDelete.value);
     const response = await fetch(`/api/users/${emailDelete.value}`, {
         method: "DELETE",
         headers: {

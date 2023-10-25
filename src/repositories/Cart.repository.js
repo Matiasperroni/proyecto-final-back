@@ -13,11 +13,6 @@ export default class CartRepository {
         return productID;
     };
 
-    // purchaseCart = async (cartID, userMail) => {
-    //     const purchase = await this.dao.purchase(cartID, userMail);
-    //     return purchase;
-    // };
-
     createCart = async () => {
         const cart = await this.dao.createNewCart();
         return cart;
@@ -28,10 +23,6 @@ export default class CartRepository {
         return cart;
     };
 
-    // updateProduct = async (id, products) => {
-    //     const productUpdate = await this.dao.update(id, products);
-    //     return productUpdate;
-    // };
     updateWholeCart = async (cartID, prods) => {
         const updatedCart = await this.dao.updateWholeCart(cartID, prods)
         return updatedCart;

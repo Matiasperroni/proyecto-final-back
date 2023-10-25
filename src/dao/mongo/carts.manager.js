@@ -12,7 +12,6 @@ class CartManagerDB {
             const carts = await this.cartsModel.find().lean();
             return carts;
         } catch (error) {
-            // throw new Error("Doesn´t exists a cart with this ID.");
             console.error("Doesn´t exists a cart with this ID.");
         }
     }
@@ -25,7 +24,6 @@ class CartManagerDB {
         }
     }
 
-    // const cartFound = await this.cartsModel.find({_id: id}).populate("products.product");
     async getCartByID(id) {
         try {
             const cartFound = await this.cartsModel
@@ -65,30 +63,6 @@ class CartManagerDB {
             throw new Error("Could not add products to cart: " + error);
         }
     }
-    // async deleteProdFromCart(cartID, prodID) {
-    //     try {
-    //         const cart = await this.cartsModel.findById(cartID);
-    //         // console.log(cart.products.product, "from delete");
-    //         const filtered = cart.products.filter((prod) => {prod.id === prodID})
-    //         console.log(filtered);
-
-    //         // const prodIndex = cart.products.findIndex(
-    //         //     (prod) => prod.product === prodID
-    //         // );
-    //         // if (prodIndex !== -1) {
-    //         //     cart.products[prodIndex].quantity++;
-    //         // } else {
-    //         //     const prodToDelete = { product: prodID };
-    //         //     cart.products.splice(prodToDelete, 1);
-    //         // }
-    //         // await cart.save();
-    //         return cart;
-    //     } catch (error) {
-    //         throw new Error(
-    //             error.message
-    //         );
-    //     }
-    // }
 
     async deleteProdFromCart(cartID, prodID) {
         try {
@@ -112,14 +86,9 @@ class CartManagerDB {
 
     async updateWholeCart(cartID, prods) {
         try {
-            // const cartToUpdate = await this.cartsModel.findById(cartID);
-            console.log(cartID, prods, "a ver si llega aca");
-            const updatedCart = await this.cartsModel.findOneAndUpdate(
-                { _id: cartID },
-                { product: prods }
-            );
-            console.log("updated cart", updatedCart);
-            return updatedCart;
+            const cartToUpdate = await this.cartsModel.findById(cartID);
+            cartToUpdate.products = prods;
+            await cartToUpdate.save()
         } catch (error) {
             throw new Error("Couldn´t update cart.");
         }
@@ -132,19 +101,15 @@ class CartManagerDB {
             return cart;
         } catch (err) {
             console.error(err);
-            // console.log("no se pudo vaciar");
         }
     }
     async updateQuantity(cartID, prodID, quantity) {
         try {
             const cart = await this.cartsModel.findById(cartID);
-            // console.log("soy cart", cart.products);
             const prodToUpdate = cart.products.find(
                 (prod) => prod.product._id.toString() === prodID
             );
-            // console.log("soy prodToUpdate", prodToUpdate);
             prodToUpdate.quantity = quantity;
-            // console.log("soy prodToUpdate despues", prodToUpdate);
             cart.save();
             return cart;
         } catch (err) {
@@ -170,11 +135,9 @@ class CartManagerDB {
                 }
 
                 if (product.stock < cartProduct.quantity) {
-                    console.log("aca");
                     unavailableProducts.push(cartProduct.product);
                 } else {
                     product.stock -= cartProduct.quantity;
-                    console.log(cartID);
                     await this.deleteProdFromCart(cartID, cartProduct._id.toString());
                     totalPrice =
                         product.price * cartProduct.quantity + totalPrice;
@@ -183,8 +146,6 @@ class CartManagerDB {
             }
 
             if (unavailableProducts.length > 0) {
-                console.log(unavailableProducts);
-                console.log(email, totalPrice);
                 return unavailableProducts;
             }
             const newTicket = await ticketModel.create({
@@ -193,10 +154,7 @@ class CartManagerDB {
                 amount: totalPrice,
                 purchaser: email,
             });
-            console.log(newTicket, "new ticket");
             const ticket = await ticketModel.findOne({code: newTicket.code}).lean()
-            console.log("soy el ticket", ticket);
-
             await cart.save();
 
             return {

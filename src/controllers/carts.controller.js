@@ -49,7 +49,6 @@ export const getCartByID = async (req, res) => {
             });
         }
         const products = cart.products;
-        console.log(products, "SOY LOS PRODUCTS DE CART ID");
         res.render("cart", { products });
     } catch (error) {
         req.logger.error(`Server error getting cart by id ${error}`);
@@ -58,14 +57,12 @@ export const getCartByID = async (req, res) => {
 };
 
 export const addProductToCart = async (req, res) => {
-    //TODO: Hacer que se agreguen los productos y se cree el carrito si no existe
     try {
         const cartID = req.params.cid;
         const prodID = req.params.pid;
         const user = req.session.user;
 
         const cart = await cartRepository.getById(cartID);
-        console.log(cart);
         if (cart) {
             const existingProd = cart.products.find(
                 (product) => product.product._id.toString() === prodID
@@ -134,7 +131,7 @@ export const updateQuantity = async (req, res) => {
     res.send(updatedQuantity);
 };
 
-export const deleteCart = async (req, res) => {
+export const emptyCart = async (req, res) => {
     const cid = req.params.cid;
     const deletedCart = await cartRepository.emptyCart(cid);
     if (!deletedCart) {
@@ -153,7 +150,6 @@ export const finishPurchase = async (req, res) => {
         const user = req?.session?.user;
         const cartID = req.params.cid;
         const cart = await cartRepository.purchase(cartID, user.email);
-        console.log("soy cart de finish purchase", cart);
         if (!cart.ticket) {
             res.status(500).send(
                 "Error trying to purchase: we don´t have that much products in stock."
@@ -162,7 +158,6 @@ export const finishPurchase = async (req, res) => {
             cart.ticket.purchaser = `Name: ${user.first_name} Last Name: ${user.last_name}. Email: ${user.email}`;
             if (cart) {
                 const newTicket = { newTicket: cart.ticket };
-                console.log(newTicket);
                 res.render("purchase", { newTicket: newTicket });
             } else {
                 res.status(500).send("error: error trying to purchase.");

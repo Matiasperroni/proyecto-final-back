@@ -12,7 +12,7 @@ import {
     changePassword,
     getCartFromUser,
 } from "../controllers/sessions.controller.js";
-import { validateToken } from "../utils.js";
+import { validateTokenRecEmail, validateToken } from "../utils.js";
 import { setLastConnectionMiddleware } from "../middlewares/middlewares.js";
 
 const router = Router();
@@ -58,6 +58,6 @@ router.get(
 
 router.get("/recoveremail/:email", sendEmail);
 
-router.post("/changepassword/:token", validateToken, changePassword);
+router.post("/changepassword/:token", validateTokenRecEmail, changePassword);
 
 export default router;

@@ -19,7 +19,6 @@ export const changeRole = async (req, res) => {
                     );
                 }
             );
-            console.log(hasAllDocuments, "has documents");
             if (!hasAllDocuments)
                 throw new Error("User must have all documents");
         }
@@ -32,7 +31,6 @@ export const changeRole = async (req, res) => {
         } else {
             res.status(404).send("User not found");
         }
-        console.log(newRole, "a ver");
         if (newRole === "User" || newRole === "Premium") {
             const updatedUser = await userModel.findByIdAndUpdate(
                 userID,
@@ -116,7 +114,6 @@ export const deleteInactiveUsers = async (req, res) => {
             { $set: { inactive: true } }
         );
         const inactiveUsers = await userModel.find({ inactive: true });
-        // console.log("users que deberian ser de 2 semanas o mas", inactiveUsers);
         sendEmail(inactiveUsers);
         res.status(200).send(inactiveUsers);
     } catch (e) {
@@ -132,7 +129,6 @@ export const getUserByEmail = async (req, res) => {
     try {
         const userEmail = req.params.email;
         const user = await userModel.find({ email: userEmail });
-        console.log(user);
         res.status(200).send(user);
     } catch (e) {
         res.status(500).send({ error: e.message });

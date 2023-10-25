@@ -49,7 +49,6 @@ class ProductsManagerDB {
             );
             return updatedProduct;
         } catch (error) {
-            // console.log("Cannot update");
             throw new Error("Could not update product")
         }
     }

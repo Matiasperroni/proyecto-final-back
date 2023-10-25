@@ -23,6 +23,9 @@ const addEvents = () => {
 
     const purchaseBtn = document.querySelector(".purchase")
     purchaseBtn.addEventListener("click", purchase)
+
+    const emptyCartBtn = document.querySelector(".emptyCart")
+    emptyCartBtn.addEventListener("click", emptyCart)
 };
 
 const deleteFromCart = async (e) => {
@@ -39,6 +42,17 @@ const deleteFromCart = async (e) => {
 
 const purchase = async() => {
     window.location.replace(`/api/carts/${cartID}/purchase`)
+}
+
+const emptyCart = async() => {
+    const response = await fetch(`/api/carts/${cartID}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    const result = await response.json();
+    window.location.reload()
 }
 
 window.addEventListener("load", () => {
